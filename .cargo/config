@@ -1,0 +1,13 @@
+[alias]
+kernel = "objcopy --bin rrwos -- -O binary kernel.img"
+rkernel = "objcopy --release --bin rrwos -- -O binary kernel.img"
+
+[build]
+#target="aarch64-unknown-none"
+target="armv7a-none-eabi"
+
+[target.aarch64-unknown-none]
+rustflags = ["-C", "link-arg=-Tsrc/bsp/qemu-virt/linker.ld"]
+
+[target.armv7a-none-eabi]
+rustflags = ["-C", "link-arg=-Tsrc/bsp/qemu-virt/linker.ld"]

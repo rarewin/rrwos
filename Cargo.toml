@@ -5,6 +5,7 @@ authors = ["Katsuki Kobayashi <rare@tirasweel.org>"]
 edition = "2018"
 
 [dependencies]
+volatile-register = "0.2"
 
 [profile.dev]
 panic = "abort"

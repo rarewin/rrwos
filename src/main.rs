@@ -1,5 +1,7 @@
 #![no_std]
 #![no_main]
+#![feature(llvm_asm)]
+#![feature(global_asm)]
 
 use core::panic::PanicInfo;
 use core::ptr::write_volatile;
@@ -20,8 +22,15 @@ pub const PL011_UARTCR: u64 = PL011_BASE + 0x030;
 pub const PL011_UARTIMSC: u64 = PL011_BASE + 0x038;
 pub const PL011_UARTDR: u64 = PL011_BASE + 0x000;
 
+#[cfg(target_arch = "arm")]
+#[path = "cpu/armv7a/start.rs"]
+pub mod start;
+
 #[no_mangle]
-pub extern "C" fn _start() -> ! {
+pub extern "C" fn _main() -> ! {
+    unsafe {
+        llvm_asm!("nop");
+    }
     unsafe {
         write_volatile(PL011_UARTIBRD as *mut u32, 1);
         write_volatile(PL011_UARTFBRD as *mut u32, 0);
