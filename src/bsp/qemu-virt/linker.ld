@@ -6,25 +6,25 @@ MEMORY
 
 SECTIONS
 {
-	.text : ALIGN(0x40)
+	.text 0x40010000 : ALIGN(0x40)
 	{
 		*(.text);
-	} > rom
+	} > ram
 
 	.rodata : ALIGN(0x40)
 	{
 		*(.rodata);
-	} > rom
+	} > ram
 
 	.data : ALIGN(0x40)
 	{
 		*(.data);
-	} > ram AT> rom
+	} > ram
 
 	.bss : ALIGN(0x40)
 	{
 		*(.bss);
-	} > ram AT> rom
+	} > ram
 
 	.stack (NOLOAD) : ALIGN(0x40)
 	{
