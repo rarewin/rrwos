@@ -1,3 +1,5 @@
+use core::fmt;
+
 use volatile_register::{RO, RW, WO};
 
 #[repr(C)]
@@ -28,26 +30,36 @@ pub const PL011_BASE: u64 = 0x900_0000; // @todo should be obtained from dtc
 pub const PL011_CLOCK: u32 = 0x16e_3600; // @todo should be obtained from dtc
 
 impl Uart {
-    pub fn new(baudrate: u32) -> Uart {
-        let uart = Uart {
+    pub fn new() -> Self {
+        Self {
             u: unsafe { &mut *(PL011_BASE as *mut Pl011Reg) },
-        };
-
-        unsafe {
-            uart.u.ibrd.write((PL011_CLOCK >> 4) / baudrate);
-            uart.u.fbrd.write((PL011_CLOCK << 2) / baudrate);
-            uart.u.ifls.write(0x12);
-            uart.u.lcr_h.write(0x70);
-            uart.u.cr.write(0x4301);
-            uart.u.imsc.write(0x30);
         }
+    }
 
-        uart
+    pub fn init(&mut self, baudrate: u32) {
+        unsafe {
+            self.u.ibrd.write((PL011_CLOCK >> 4) / baudrate);
+            self.u.fbrd.write((PL011_CLOCK << 2) / baudrate);
+            self.u.ifls.write(0x12);
+            self.u.lcr_h.write(0x70);
+            self.u.cr.write(0x4301);
+            self.u.imsc.write(0x30);
+        }
     }
 
     pub fn write(&mut self, c: u32) {
         unsafe {
             self.u.dr.write(c);
         }
+    }
+}
+
+impl fmt::Write for Uart {
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        for c in s.chars() {
+            self.write(c as u32);
+        }
+
+        Ok(())
     }
 }

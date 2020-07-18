@@ -3,3 +3,5 @@
 - cortex-a7なvirt
   - 0x4001_0000からカーネルが置かれる模様 (メモリとしては0x4000_0000から
   - UARTはpl011で 0x900_0000 から
+** 参考
+- https://github.com/rust-embedded/rust-raspberrypi-OS-tutorials
