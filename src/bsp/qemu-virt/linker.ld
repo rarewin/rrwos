@@ -21,10 +21,13 @@ SECTIONS
 		*(.data);
 	} > ram
 
-	.bss : ALIGN(0x40)
+	.bss (NOLOAD) : ALIGN(0x40)
 	{
+		__bss_start = .;
 		*(.bss);
 	} > ram
+
+	__bss_end = ALIGN(0x40);
 
 	.stack (NOLOAD) : ALIGN(0x40)
 	{

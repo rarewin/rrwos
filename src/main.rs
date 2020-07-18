@@ -36,6 +36,4 @@ pub extern "C" fn _main() -> ! {
     //}
 
     panic!("test");
-
-    loop {}
 }
