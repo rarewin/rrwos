@@ -1,0 +1,5 @@
+** メモ
+- qemuは ~-M virt,dumpdtb=/tmp/dump.dtb~ とするとdtbを吐いてくれる
+- cortex-a7なvirt
+  - 0x4001_0000からカーネルが置かれる模様 (メモリとしては0x4000_0000から
+  - UARTはpl011で 0x900_0000 から
