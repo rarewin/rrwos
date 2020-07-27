@@ -3,6 +3,10 @@
 #![feature(llvm_asm)]
 #![feature(global_asm)]
 #![feature(format_args_nl)]
+#![feature(trait_alias)]
+#![feature(const_fn)]
+#![feature(const_raw_ptr_deref)]
+#![feature(const_mut_refs)]
 
 use core::panic::PanicInfo;
 
@@ -17,20 +21,20 @@ fn panic(_info: &PanicInfo) -> ! {
 #[path = "cpu/armv7a/start.rs"]
 pub mod start;
 
+pub mod driver;
+
 pub mod console;
-pub mod pl011;
 pub mod print;
+pub mod synchro;
+
+pub mod pl011; // @todo temp
 
 #[no_mangle]
 pub extern "C" fn _main() -> ! {
-    let mut uart = pl011::Uart::new();
-
-    uart.init(119200);
-
     // print::_print(format_args!("hogehoge"));
 
     println!("hogehoge");
-    //
+
     //for c in b"Hello World".iter() {
     //    uart.write(*c as u32);
     //}

@@ -22,42 +22,55 @@ struct Pl011Reg {
     dmacr: RW<u32>,
 }
 
-pub struct Uart {
-    u: &'static mut Pl011Reg,
+pub struct UartCore {
+    // reg: &'static mut Pl011Reg,
+    written_chars: usize,
 }
 
 pub const PL011_BASE: u64 = 0x900_0000; // @todo should be obtained from dtc
 pub const PL011_CLOCK: u32 = 0x16e_3600; // @todo should be obtained from dtc
 
-impl Uart {
-    pub fn new() -> Self {
-        Self {
-            u: unsafe { &mut *(PL011_BASE as *mut Pl011Reg) },
+impl fmt::Write for UartCore {
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        for c in s.chars() {
+            self.write_char(c);
         }
-    }
-
-    pub fn init(&mut self, baudrate: u32) {
-        unsafe {
-            self.u.ibrd.write((PL011_CLOCK >> 4) / baudrate);
-            self.u.fbrd.write((PL011_CLOCK << 2) / baudrate);
-            self.u.ifls.write(0x12);
-            self.u.lcr_h.write(0x70);
-            self.u.cr.write(0x4301);
-            self.u.imsc.write(0x30);
-        }
-    }
-
-    pub fn write(&mut self, c: u32) {
-        unsafe {
-            self.u.dr.write(c);
-        }
+        Ok(())
     }
 }
 
-impl fmt::Write for Uart {
-    fn write_str(&mut self, s: &str) -> fmt::Result {
-        for c in s.chars() {
-            self.write(c as u32);
+impl UartCore {
+    pub const fn new() -> Self {
+        Self { written_chars: 0 }
+    }
+
+    pub fn write_char(&mut self, c: char) {
+        unsafe {
+            let reg = &mut *(PL011_BASE as *mut Pl011Reg);
+            reg.dr.write(c as u32);
+        }
+        self.written_chars += 1;
+    }
+}
+
+use crate::driver::interface::DeviceDriver;
+
+impl DeviceDriver for UartCore {
+    fn compatible(&self) -> &'static str {
+        "pl011"
+    }
+
+    fn init(&mut self /* TODO: dtc */) -> Result<(), ()> {
+        let baudrate = 115200; // TODO
+
+        unsafe {
+            let reg = &mut *(PL011_BASE as *mut Pl011Reg);
+            reg.ibrd.write((PL011_CLOCK >> 4) / baudrate);
+            reg.fbrd.write((PL011_CLOCK << 2) / baudrate);
+            reg.ifls.write(0x12);
+            reg.lcr_h.write(0x70);
+            reg.cr.write(0x4301);
+            reg.imsc.write(0x30);
         }
 
         Ok(())
