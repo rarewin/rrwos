@@ -21,8 +21,6 @@ fn panic(_info: &PanicInfo) -> ! {
 #[path = "cpu/armv7a/start.rs"]
 pub mod start;
 
-pub mod driver;
-
 pub mod console;
 pub mod print;
 pub mod synchro;

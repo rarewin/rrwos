@@ -53,7 +53,7 @@ impl UartCore {
     }
 }
 
-use crate::driver::interface::DeviceDriver;
+use rrwos::drivers::interface::DeviceDriver;
 
 impl DeviceDriver for UartCore {
     fn compatible(&self) -> &'static str {
