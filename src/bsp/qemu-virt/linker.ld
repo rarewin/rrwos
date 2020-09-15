@@ -9,11 +9,13 @@ SECTIONS
 	.text 0x40010000 : ALIGN(0x40)
 	{
 		*(.text);
+		*(.text.*);
 	} > ram
 
 	.rodata : ALIGN(0x40)
 	{
 		*(.rodata);
+		*(.rodata.*);
 	} > ram
 
 	.data : ALIGN(0x40)
